@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch
 from tqdm import tqdm
 import pickle
-import params
+import params1
 
 
 mu_k = torch.zeros(1)
@@ -101,31 +101,32 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni=False, multi=F
         return loss_G, loss_D,  lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood
 
 
-epochs = params.epochs
-learning_rate = params.learning_rate
-affine = params.affine
-o2 = params.affine
+# epochs params1ms.epochs
+# learning_rate params1ms.learning_rate
+# affine params1ms.affine
+# o2 params1ms.affine
+# entropy params1ms.entropy
 
-_, _, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelihood, approx_log_z = train(
-    epochs, learning_rate, entropy=True, affine=affine, o2=o2)
+# _, _, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelihood, approx_log_z = train(
+#     epochs, learning_rate, entropy=True, affine=affine, o2=o2)
 
 
-# save pickles
-pickle.dump(lg, open(
-    '/home/i.sebag/sync/PWGAN/pickle/lg_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(ld, open(
-    '/home/i.sebag/sync/PWGAN/pickle/ld_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(muq, open(
-    '/home/i.sebag/sync/PWGAN/pickle/muq_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(muk, open(
-    '/home/i.sebag/sync/PWGAN/pickle/muk_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(logsigmaq, open(
-    '/home/i.sebag/sync/PWGAN/pickle/logsigmaq_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(logsigmak, open(
-    '/home/i.sebag/sync/PWGAN/pickle/logsigmak_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(log_likelihood, open(
-    '/home/i.sebag/sync/PWGAN/pickle/log_ikelihood_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(approx_log_likelihood, open(
-    '/home/i.sebag/sync/PWGAN/pickle/approxloglikelihood_entropy_affine_o2.pkl', 'wb'))
-pickle.dump(approx_log_z, open(
-    '/home/i.sebag/sync/PWGAN/pickle/approxlogz_entropy_affine_o2.pkl', 'wb'))
+# # save pickles
+# pickle.dump(lg, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/lg_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(ld, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/ld_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(muq, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/muq_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(muk, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/muk_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(logsigmaq, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/logsigmaq_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(logsigmak, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/logsigmak_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(log_likelihood, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/log_ikelihood_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(approx_log_likelihood, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/approxloglikelihood_entropy_affine_o2.pkl', 'wb'))
+# pickle.dump(approx_log_z, open(
+#     '/home/i.sebag/sync/PWGAN/pickle/approxlogz_entropy_affine_o2.pkl', 'wb'))
