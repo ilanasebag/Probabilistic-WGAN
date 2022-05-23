@@ -33,7 +33,7 @@ class Generator(nn.Module):
                 (epsU-weights[0])/(weights[1]), mu_q[1], math.exp(log_sigma_q[1]))
         return Variable(torch.Tensor(sample))
 
-    def log_prob_gmm_icdf(self, epsN):
+    def gmm_logprob(self, epsN):
         mix = torch.distributions.Categorical(torch.log(self.softmax_weights))
         comp = torch.distributions.Normal(
             self.mu_q, torch.exp(self.log_sigma_q))

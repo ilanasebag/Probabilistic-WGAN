@@ -15,8 +15,6 @@ args_path = parser.parse_args().args_path
 args = __import__(args_path)
 
 
-
-
 params = args 
 parameters = args_path
 
@@ -28,9 +26,10 @@ entropy = params.entropy
 uni_icdf = params.uni_icdf
 o4 = params.o4
 two_modes_icdf = params.two_modes_icdf
+gmm_logprob = params.gmm_logprob
 
 _, _, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelihood, approx_log_z = train.train(
-    epochs, learning_rate, entropy=entropy, affine=affine, uni_icdf=uni_icdf, two_modes_icdf=two_modes_icdf, o2=o2, o4=o4)
+    epochs, learning_rate, entropy=entropy, affine=affine, uni_icdf=uni_icdf, two_modes_icdf=two_modes_icdf, gmm_logprob=gmm_logprob, o2=o2, o4=o4)
 
 
 # # save pickles

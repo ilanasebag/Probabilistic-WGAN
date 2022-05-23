@@ -6,11 +6,10 @@ from tqdm import tqdm
 import pickle
 import numpy as np
 
-
 x = torch.distributions.Normal(torch.ones(100)*5, torch.ones(100)*8).sample()
 
 
-def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, two_modes_icdf=False, o2=False, o4=False):
+def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, two_modes_icdf=False, gmm_logprob=False, o2=False, o4=False):
 
     mu_k = torch.ones(1)
     log_sigma_k = torch.ones(1)
@@ -67,8 +66,15 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
 
         elif two_modes_icdf == True:
             #eps = torch.rand(1)
-            eps = np.random.uniform(0.001, 0.009, 1)
+            #eps = eps.detach().numpy()
+            eps = np.random.uniform(0., 1., 1)
             G = generator.two_modes_icdf(eps)
+
+        elif gmm_logprob == True:
+            eps = torch.distributions.Normal(
+                torch.zeros(1), torch.ones(1)).sample()
+            G = generator.gmm_logprob(eps)
+            
 
         generated_data = G
 
@@ -105,6 +111,9 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
 
         elif two_modes_icdf == True:
             generated_data2 = generator.two_modes_icdf(eps)
+        
+        elif gmm_logprob == True:
+            generated_data2 = generator.gmm_logprob(eps)
 
         if entropy == True:
             loss_G = - torch.mean(discriminator.o2_polynomial(generated_data2)

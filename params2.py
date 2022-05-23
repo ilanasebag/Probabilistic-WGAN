@@ -7,3 +7,4 @@ o2 = True
 entropy = True
 o4 =False 
 two_modes_icdf = False
+gmm_logprob =  False 
