@@ -4,27 +4,37 @@ import torch.optim as optim
 import torch
 from tqdm import tqdm
 import pickle
-import params1
+import numpy as np
 
-
-mu_k = torch.zeros(1)
-log_sigma_k = torch.ones(1)
-mu_q = torch.zeros(1)
-log_sigma_q = torch.ones(1)
-weights = torch.ones(1)
-
-cuda = True if torch.cuda.is_available() else False
-Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
-mu_q.requires_grad_(requires_grad=True)
-log_sigma_q.requires_grad_(requires_grad=True)
-mu_k.requires_grad_(requires_grad=True)
-log_sigma_k.requires_grad_(requires_grad=True)
-weights.requires_grad_(requires_grad=True)
 
 x = torch.distributions.Normal(torch.ones(100)*5, torch.ones(100)*8).sample()
 
 
-def train(epochs, learning_rate, entropy=False, affine=False, uni=False, multi=False, o2=False, o4=False):
+def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, two_modes_icdf=False, o2=False, o4=False):
+
+    mu_k = torch.ones(1)
+    log_sigma_k = torch.ones(1)
+
+    mu_k.requires_grad_(requires_grad=True)
+    log_sigma_k.requires_grad_(requires_grad=True)
+
+    if affine == True or uni_icdf == True:
+        mu_q = torch.zeros(1)
+        log_sigma_q = torch.ones(1)
+        weights = torch.ones(1)
+
+    elif two_modes_icdf == True:
+        n_components = 2
+        weights = torch.ones(n_components, )/2
+        mu_q = torch.tensor([1., 14.])
+        log_sigma_q = torch.log(torch.ones(n_components,))
+
+    cuda = True if torch.cuda.is_available() else False
+    Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+    mu_q.requires_grad_(requires_grad=True)
+    log_sigma_q.requires_grad_(requires_grad=True)
+
+    weights.requires_grad_(requires_grad=True)
 
     lg = []  # loss generator
     ld = []  # loss discriminator
@@ -50,6 +60,15 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni=False, multi=F
             eps = torch.distributions.Normal(
                 torch.zeros(1), torch.ones(1)).sample()
             G = generator.affine(eps)
+
+        elif uni_icdf == True:
+            eps = torch.rand(1)
+            G = generator.uni_icdf(eps)
+
+        elif two_modes_icdf == True:
+            #eps = torch.rand(1)
+            eps = np.random.uniform(0.001, 0.009, 1)
+            G = generator.two_modes_icdf(eps)
 
         generated_data = G
 
@@ -78,7 +97,14 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni=False, multi=F
 
         # generator's training
         optimizer_G.zero_grad()
-        generated_data2 = generator.affine(eps)
+        if affine == True:
+            generated_data2 = generator.affine(eps)
+
+        elif uni_icdf == True:
+            generated_data2 = generator.uni_icdf(eps)
+
+        elif two_modes_icdf == True:
+            generated_data2 = generator.two_modes_icdf(eps)
 
         if entropy == True:
             loss_G = - torch.mean(discriminator.o2_polynomial(generated_data2)

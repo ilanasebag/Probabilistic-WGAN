@@ -19,7 +19,7 @@ class Generator(nn.Module):
 
     def uni_icdf(self, epsU):
         q = torch.distributions.Normal(self.mu_q, torch.exp(self.log_sigma_q))
-        return q.icdf(self.epsU)
+        return q.icdf(epsU)
 
     def two_modes_icdf(self, epsU):
         weights = np.log(self.softmax_weights.detach().numpy())
