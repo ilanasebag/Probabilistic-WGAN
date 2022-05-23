@@ -22,7 +22,7 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
         log_sigma_q = torch.ones(1)
         weights = torch.ones(1)
 
-    elif two_modes_icdf == True:
+    elif two_modes_icdf == True or gmm_logprob == True:
         n_components = 2
         weights = torch.ones(n_components, )/2
         mu_q = torch.tensor([1., 14.])
@@ -74,7 +74,6 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
             eps = torch.distributions.Normal(
                 torch.zeros(1), torch.ones(1)).sample()
             G = generator.gmm_logprob(eps)
-            
 
         generated_data = G
 
@@ -111,7 +110,7 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
 
         elif two_modes_icdf == True:
             generated_data2 = generator.two_modes_icdf(eps)
-        
+
         elif gmm_logprob == True:
             generated_data2 = generator.gmm_logprob(eps)
 
@@ -126,8 +125,17 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
         optimizer_G.step()
 
         lg.append(loss_G.item())
-        muq.append(mu_q.item())
-        logsigmaq.append(log_sigma_q.item())
+
+        if affine == True or uni_icdf == True:
+            muq.append(mu_q.item())
+            logsigmaq.append(log_sigma_q.item())
+
+        elif two_modes_icdf == True or gmm_logprob == True:
+            mu_best = torch.min(mu_q[0]-torch.mean(x), mu_q[1]-torch.mean(x))
+            muq.append(mu_best)
+            logsigma_best = torch.min(log_sigma_q[0] - torch.log(torch.sqrt(torch.var(
+                x))), log_sigma_q[1] - torch.log(torch.sqrt(torch.var(x))))
+            logsigmaq.append(logsigma_best)
 
     if entropy == True:
         return loss_G, loss_D, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelihood, approx_log_z
