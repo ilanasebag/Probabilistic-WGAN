@@ -1,5 +1,5 @@
 
-epochs = 10
+epochs = 65000
 learning_rate = 1e-3
 affine = False
 uni_icdf = False
