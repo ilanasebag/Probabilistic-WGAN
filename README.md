@@ -3,6 +3,7 @@
 ### Step 1 - Fit a model that can approximate intractable posterior taking the form of a 2nd or 4th order polynomial 
 
 We consider a variational approximation partition problem as follows:
+
 $$
 \mathbb{P}(x|\theta) = \frac{D(x;\theta)}{ \int_{\theta} D(x;\theta)} = \frac{D(x;\theta)}{\mathcal{Z}(\theta)}
 $$
