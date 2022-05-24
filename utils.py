@@ -22,7 +22,7 @@ class Generator(nn.Module):
         return q.icdf(epsU)
 
     def two_modes_icdf(self, epsU):
-        weights = np.exp(self.softmax_weights.detach().numpy())
+        weights = np.exp(self.softmax_weights.detach().numpy()) #self.softmax_weights.detach().numpy() 
         mu_q = self.mu_q.detach().numpy()
         log_sigma_q = self.log_sigma_q.detach().numpy()
         if epsU < weights[0]:
@@ -34,7 +34,7 @@ class Generator(nn.Module):
         return Variable(torch.Tensor(sample))
 
     def gmm_logprob(self, epsN):
-        mix = torch.distributions.Categorical(torch.exp(self.softmax_weights))
+        mix = torch.distributions.Categorical(torch.exp(self.softmax_weights)) #torch.distributions.Categorical(self.softmax_weights) 
         comp = torch.distributions.Normal(
             self.mu_q, torch.exp(self.log_sigma_q))
         gmm = torch.distributions.MixtureSameFamily(mix, comp)

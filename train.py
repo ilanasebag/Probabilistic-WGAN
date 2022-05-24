@@ -79,8 +79,11 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
 
         if o2 == True:
             Dx = discriminator.o2_polynomial(x)  # discriminator over real data
-            # discriminator over fake data
-            Df = discriminator.o2_polynomial(generated_data)
+            Df = discriminator.o2_polynomial(generated_data)             # discriminator over fake data
+
+        elif o4 == True:
+            Dx = discriminator.o4_polynomial(x)
+            Df  = discriminator.o4_polynomial(generated_data)
 
         # discriminator's training
         optimizer_D.zero_grad()
@@ -114,12 +117,20 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
         elif gmm_logprob == True:
             generated_data2 = generator.gmm_logprob(eps)
 
+        if o2 == True:
+            Dx2 = discriminator.o2_polynomial(x)  # discriminator over real data
+            Df2 = discriminator.o2_polynomial(generated_data2)             # discriminator over fake data
+
+        elif o4 == True:
+            Dx2 = discriminator.o4_polynomial(x)
+            Df2  = discriminator.o4_polynomial(generated_data2)
+
         if entropy == True:
-            loss_G = - torch.mean(discriminator.o2_polynomial(generated_data2)
+            loss_G = - torch.mean(Df2
                                   ) + torch.mean(q.log_prob(generated_data2))
 
         elif entropy == False:
-            loss_G = - torch.mean(Df)
+            loss_G = - torch.mean(Df2) # Df or Df2 ????
 
         loss_G.backward()
         optimizer_G.step()
