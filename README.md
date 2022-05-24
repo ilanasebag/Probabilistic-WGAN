@@ -1,6 +1,6 @@
 # Probabilistic Wasserstein-GAN-like model with entropy 
 
-### Step 1 - Fit a model that can approximate intractable posterior taking the form of a 2nd or 4th order polynomial 
+### Big picture - Fit a model that can approximate intractable posterior taking the form of a 2nd or 4th order polynomial 
 
 We consider a variational approximation partition problem as follows:
 
@@ -16,5 +16,14 @@ $$ $$ \therefore \log \mathcal{Z}(\theta) \approx {\rm max}_\phi \int q_\phi(x) 
 $$
 
 
+### Usage 
+
+1. Clone this repository
+2. Install the required packages 
+'''
 ./init.sh
-python3 main.py -ap 'insert params file' e.g. python3 main.py -ap 'params1'
+'''
+3. Run the main file with a particular set of parameters, e.g.:
+'''
+python3 main.py -ap 'params1'
+'''
