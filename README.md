@@ -20,10 +20,10 @@ $$
 
 1. Clone this repository
 2. Install the required packages 
-'''
+```
 ./init.sh
-'''
+```
 3. Run the main file with a particular set of parameters, e.g.:
-'''
+```
 python3 main.py -ap 'params1'
-'''
+```
