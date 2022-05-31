@@ -79,11 +79,12 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
 
         if o2 == True:
             Dx = discriminator.o2_polynomial(x)  # discriminator over real data
-            Df = discriminator.o2_polynomial(generated_data)             # discriminator over fake data
+            # discriminator over fake data
+            Df = discriminator.o2_polynomial(generated_data)
 
         elif o4 == True:
             Dx = discriminator.o4_polynomial(x)
-            Df  = discriminator.o4_polynomial(generated_data)
+            Df = discriminator.o4_polynomial(generated_data)
 
         # discriminator's training
         optimizer_D.zero_grad()
@@ -118,19 +119,21 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
             generated_data2 = generator.gmm_logprob(eps)
 
         if o2 == True:
-            Dx2 = discriminator.o2_polynomial(x)  # discriminator over real data
-            Df2 = discriminator.o2_polynomial(generated_data2)             # discriminator over fake data
+            Dx2 = discriminator.o2_polynomial(
+                x)  # discriminator over real data
+            # discriminator over fake data
+            Df2 = discriminator.o2_polynomial(generated_data2)
 
         elif o4 == True:
             Dx2 = discriminator.o4_polynomial(x)
-            Df2  = discriminator.o4_polynomial(generated_data2)
+            Df2 = discriminator.o4_polynomial(generated_data2)
 
         if entropy == True:
             loss_G = - torch.mean(Df2
                                   ) + torch.mean(q.log_prob(generated_data2))
 
         elif entropy == False:
-            loss_G = - torch.mean(Df2) # Df or Df2 ????
+            loss_G = - torch.mean(Df2)
 
         loss_G.backward()
         optimizer_G.step()
@@ -142,10 +145,26 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
             logsigmaq.append(log_sigma_q.item())
 
         elif two_modes_icdf == True or gmm_logprob == True:
-            mu_best = torch.min(mu_q[0]-torch.mean(x), mu_q[1]-torch.mean(x))
+            #     mu_best = torch.min(mu_q[0]-torch.mean(x), mu_q[1]-torch.mean(x))
+            #     muq.append(mu_best)
+            #     logsigma_best = torch.min(log_sigma_q[0] - torch.log(torch.sqrt(torch.var(
+            #         x))), log_sigma_q[1] - torch.log(torch.sqrt(torch.var(x))))
+            #     logsigmaq.append(logsigma_best)
+
+            if np.abs(mu_q[0].item()-torch.mean(x).item()) > np.abs(mu_q[1].item()-torch.mean(x).item()):
+                mu_best = mu_q[1].item()
+            elif np.abs(mu_q[0].item()-torch.mean(x).item()) < np.abs(mu_q[1].item()-torch.mean(x).item()):
+                mu_best = mu_q[0].item()
+
             muq.append(mu_best)
-            logsigma_best = torch.min(log_sigma_q[0] - torch.log(torch.sqrt(torch.var(
-                x))), log_sigma_q[1] - torch.log(torch.sqrt(torch.var(x))))
+
+            if np.abs(log_sigma_q[0].item() - np.log(np.sqrt(torch.var(
+                    x).item())) ) > log_sigma_q[1].item() - np.abs( np.log(np.sqrt(torch.var(x).item()))):
+                logsigma_best = log_sigma_q[1].item()
+            elif np.abs(log_sigma_q[0].item() - np.log(np.sqrt(torch.var(
+                    x).item())) < log_sigma_q[1].item()) - np.abs(np.log(np.sqrt(torch.var(x).item())) ):
+                logsigma_best = log_sigma_q[0].item()
+
             logsigmaq.append(logsigma_best)
 
     if entropy == True:

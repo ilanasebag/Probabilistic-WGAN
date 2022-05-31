@@ -7,6 +7,7 @@ from train import x
 from argparse import ArgumentParser
 from argparse import * 
 import os 
+import pickle
 
 
 parser = ArgumentParser()
@@ -22,19 +23,75 @@ epochs = params.epochs
 learning_rate = params.learning_rate
 affine = params.affine
 o2 = params.o2
-entropy = params.entropy
+#entropy = params.entropy
 uni_icdf = params.uni_icdf
 o4 = params.o4
 two_modes_icdf = params.two_modes_icdf
 gmm_logprob = params.gmm_logprob
 
 _, _, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelihood, approx_log_z = train.train(
-    epochs, learning_rate, entropy=entropy, affine=affine, uni_icdf=uni_icdf, two_modes_icdf=two_modes_icdf, gmm_logprob=gmm_logprob, o2=o2, o4=o4)
+    epochs, learning_rate, entropy=True, affine=affine, uni_icdf=uni_icdf, two_modes_icdf=two_modes_icdf, gmm_logprob=gmm_logprob, o2=o2, o4=o4)
+
+
+_, _,  lg_noe, ld_noe, muq_noe, muk_noe, logsigmaq_noe, logsigmak_noe, log_likelihood_noe = train.train(
+    epochs, learning_rate, entropy=False, affine=affine, uni_icdf=uni_icdf, two_modes_icdf=two_modes_icdf, gmm_logprob=gmm_logprob, o2=o2, o4=o4)
+
+
+# Likelihood plot
+plt.figure()
+plt.plot(log_likelihood, alpha=0.5, label='log likelihood')
+plt.plot(approx_log_likelihood, alpha=0.5, label='approx log likelihood')
+plt.legend()
+plt.title('affine=%s, uni_icdf=%s, two_modes_icdf=%s, gmm_logprob=%s,  o2=%s, o4=%s' %
+          (affine, uni_icdf,two_modes_icdf,gmm_logprob, o2, o4))
+plt.savefig('/home/i.sebag/sync/PWGAN/plots/loglikelihood_%s' % (parameters))
+plt.show()
+
+# loss plot
+plt.figure()
+plt.plot(lg, alpha=0.5, label='loss generator - entropic')
+plt.plot(ld, alpha=0.5, label='loss discriminator - entropic ')
+plt.plot(lg_noe, alpha=0.5, label='loss generator - non entropic')
+plt.plot(ld_noe, alpha=0.5, label='loss discriminator - non entropic')
+plt.legend()
+plt.title('affine=%s, uni_icdf=%s, two_modes_icdf=%s, gmm_logprob=%s,  o2=%s, o4=%s' %
+          (affine, uni_icdf,two_modes_icdf,gmm_logprob, o2, o4))
+plt.savefig('/home/i.sebag/sync/PWGAN/plots/loss_%s' % (parameters))
+plt.show()
+
+# mu plot
+plt.figure()
+plt.plot(muq, alpha=0.5, label='mu q - entropic')
+plt.plot(muk, alpha=0.5, label='mu k - entropic ')
+plt.plot(muq_noe, alpha=0.5, label='mu q - non entropic')
+plt.plot(muk_noe, alpha=0.5, label='mu k - non entropic ')
+plt.plot(np.ones(len(muq))*torch.mean(x).item(), label='mu true')
+plt.legend()
+plt.title('affine=%s, uni_icdf=%s, two_modes_icdf=%s, gmm_logprob=%s,  o2=%s, o4=%s' %
+          (affine, uni_icdf,two_modes_icdf,gmm_logprob, o2, o4))
+plt.savefig('/home/i.sebag/sync/PWGAN/plots/mu_%s' % (parameters))
+plt.show()
+
+# sigma plot
+plt.figure()
+plt.plot(np.exp(logsigmaq), alpha=0.5, label='sigma q - entropic ')
+plt.plot(np.exp(logsigmak), alpha=0.5, label='sigma k - entropic ')
+plt.plot(np.exp(logsigmaq_noe), alpha=0.5, label='sigma q - non entropic ')
+plt.plot(np.exp(logsigmak_noe), alpha=0.5, label='sigma k - non entropic ')
+plt.plot(np.ones(len(logsigmaq)) *
+         np.sqrt(torch.var(x).item()), label='sigma true')
+plt.legend()
+plt.title('affine=%s, uni_icdf=%s, two_modes_icdf=%s, gmm_logprob=%s,  o2=%s, o4=%s' %
+          (affine, uni_icdf,two_modes_icdf,gmm_logprob, o2, o4))
+plt.savefig('/home/i.sebag/sync/PWGAN/plots/sigma_%s' % (parameters))
+plt.show()
+
+
 
 
 # # save pickles
 # pickle.dump(lg, open(
-#     '/home/i.sebag/sync/PWGAN/pickle/lg', 'wb'))
+#     '/home/i.sebag/sync/PWGAN/pickle/lg.pkl', 'wb'))
 # pickle.dump(ld, open(
 #     '/home/i.sebag/sync/PWGAN/pickle/ld.pkl', 'wb'))
 # pickle.dump(muq, open(
@@ -71,47 +128,3 @@ _, _, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelih
 #     '/home/i.sebag/sync/PWGAN/pickle/approxloglikelihood_entropy_affine_o2.pkl', 'rb'))
 # approx_log_z = pickle.load(
 #     open('/home/i.sebag/sync/PWGAN/pickle/approxlogz_entropy_affine_o2.pkl', 'rb'))
-
-
-# Likelihood plot
-plt.figure()
-plt.plot(log_likelihood, label='log likelihood')
-plt.plot(approx_log_likelihood, label='approx log likelihood')
-plt.legend()
-plt.title('affine=%s, uni_icdf=%s, o2=%s, o4=%s, entropy=%s' %
-          (affine, uni_icdf, o2, o4, entropy))
-plt.savefig('/home/i.sebag/sync/PWGAN/plots/loglikelihood_%s' % (parameters))
-plt.show()
-
-# loss plot
-plt.figure()
-plt.plot(lg, label='loss generator')
-plt.plot(ld, label='loss discriminator')
-plt.legend()
-plt.title('affine=%s, uni_icdf=%s, o2=%s, o4=%s, entropy=%s' %
-          (affine, uni_icdf, o2, o4, entropy))
-plt.savefig('/home/i.sebag/sync/PWGAN/plots/loss_%s' % (parameters))
-plt.show()
-
-# mu plot
-plt.figure()
-plt.plot(muq, label='mu q')
-plt.plot(muk, label='mu k ')
-plt.plot(np.ones(len(muq))*torch.mean(x).item(), label='mu true')
-plt.legend()
-plt.title('affine=%s, uni_icdf=%s, o2=%s, o4=%s, entropy=%s' %
-          (affine, uni_icdf, o2, o4, entropy))
-plt.savefig('/home/i.sebag/sync/PWGAN/plots/mu_%s' % (parameters))
-plt.show()
-
-# sigma plot
-plt.figure()
-plt.plot(np.exp(logsigmaq), label='sigma q')
-plt.plot(np.exp(logsigmak), label='sigma k')
-plt.plot(np.ones(len(logsigmaq)) *
-         np.sqrt(torch.var(x).item()), label='sigma true')
-plt.legend()
-plt.title('affine=%s, uni_icdf=%s, o2=%s, o4=%s, entropy=%s' %
-          (affine, uni_icdf, o2, o4, entropy))
-plt.savefig('/home/i.sebag/sync/PWGAN/plots/sigma_%s' % (parameters))
-plt.show()
