@@ -1,10 +1,10 @@
 
 epochs = 300000
-learning_rate = 1e-3
+learning_rate = 1e-4
 affine = False
 uni_icdf = True
 two_modes_icdf = False
 gmm_logprob = False 
 o2 = False
-entropy = True
+#entropy = True
 o4 =True 
