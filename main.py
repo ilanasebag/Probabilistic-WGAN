@@ -9,6 +9,7 @@ from argparse import *
 import os
 import pickle
 from textwrap import wrap
+from utils import Generator
 
 parser = ArgumentParser()
 parser.add_argument('--args_path', '-ap', type=str, default='args')
@@ -36,6 +37,29 @@ _, _, lg, ld, muq, muk, logsigmaq, logsigmak, log_likelihood, approx_log_likelih
 _, _,  lg_noe, ld_noe, muq_noe, muk_noe, logsigmaq_noe, logsigmak_noe, log_likelihood_noe = train.train(
     epochs, learning_rate, entropy=False, affine=affine, uni_icdf=uni_icdf, two_modes_icdf=two_modes_icdf, gmm_logprob=gmm_logprob, o2=o2, o4=o4)
 
+#########################################################################################################
+#must be tweaked, as of now, does the job for p1
+
+#save the last values for gen's parameters 
+#fit them back into the gen
+#sample x values from the gen 
+#plot them 
+# last_muq = torch.ones(1)*muq[-1]
+# last_logsigmaq = torch.ones(1)*logsigmaq[-1]
+# best_gen = []
+# for i in range(50):
+#     eps = torch.distributions.Normal(torch.zeros(1), torch.ones(1)).sample()
+#     g = Generator(last_muq, last_logsigmaq, torch.ones(1)).affine(eps)
+#     best_gen.append(g.item())
+# print(best_gen)
+# plt.figure()
+# plt.plot(best_gen, label = 'best gen')
+# plt.legend()
+# plt.title("\n".join(wrap('affine=%s, uni_icdf=%s, two_modes_icdf=%s, gmm_logprob=%s,  o2=%s, o4=%s' %
+#           (affine, uni_icdf, two_modes_icdf, gmm_logprob, o2, o4))))
+# plt.savefig('/home/i.sebag/sync/PWGAN/plots/bestgen%s' % (parameters))
+# plt.show()
+########################################################################################################
 
 # Likelihood plot
 plt.figure()

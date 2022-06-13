@@ -1,5 +1,6 @@
+import torch 
 
-epochs = 46000
+epochs = 50000
 learning_rate = 1e-3
 affine = True
 o2 = True
