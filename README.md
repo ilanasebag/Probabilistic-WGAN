@@ -25,5 +25,5 @@ $$
 ```
 3. Run the main file with a particular set of parameters, e.g.:
 ```
-python3 main.py -ap 'params1'
+python3 main.py -ap 'p1'
 ```
