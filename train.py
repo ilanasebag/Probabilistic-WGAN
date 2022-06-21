@@ -42,7 +42,7 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
     logsigmaq = []  # log sigmaq values
     logsigmak = []  # log sigmak values
     log_likelihood = []  # log likelohood values
-    approx_log_likelihood = []  # approx log likelihood values
+    approx_log_likelihood =  []  # approx log likelihood values
 
     generator = Generator(mu_q, log_sigma_q, weights)
     optimizer_G = optim.Adam(generator.parameters(), lr=learning_rate)
