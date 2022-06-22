@@ -54,24 +54,3 @@ class Discriminator(nn.Module):
         return - (x - self.mu_k)**4 / (2*torch.exp(self.log_sigma_k)**4)
 
 
-
-#############
-
-
-class reparametrization_trick(nn.Module):
-    def __init__(self,mu_q, log_sigma_q ):
-        self.mu_q = mu_q
-        self.log_sigma_q = log_sigma_q
-        self.q = torch.distributions.Normal(self.mu_q, torch.exp(self.log_sigma_q))
-
-    def sample_noise(self):
-        eps = torch.Distributions.Normal(torch.zeros(1), torch.ones(1)).sample()
-        return eps
-    
-    def noisetox(self, eps):
-        x = self.mu_q + torch.exp(self.log_sigma_q)*eps
-
-    def log_pdf(self, x):
-        return self.q.log_pdf(x)
-        
-
