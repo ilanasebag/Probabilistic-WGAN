@@ -79,8 +79,7 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
 
         if o2 == True:
             Dx = discriminator.o2_polynomial(x)  # discriminator over real data
-            # discriminator over fake data
-            Df = discriminator.o2_polynomial(generated_data)
+            Df = discriminator.o2_polynomial(generated_data) # discriminator over fake data
 
         elif o4 == True:
             Dx = discriminator.o4_polynomial(x)
@@ -143,6 +142,8 @@ def train(epochs, learning_rate, entropy=False, affine=False, uni_icdf=False, tw
         if affine == True or uni_icdf == True:
             muq.append(mu_q.item())
             logsigmaq.append(log_sigma_q.item())
+
+
 
         elif two_modes_icdf == True or gmm_logprob == True:
             #     mu_best = torch.min(mu_q[0]-torch.mean(x), mu_q[1]-torch.mean(x))

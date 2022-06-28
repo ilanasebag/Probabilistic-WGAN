@@ -104,7 +104,7 @@ plt.figure()
 plt.plot(np.exp(logsigmaq), alpha=0.5, label='sigma q - entropic ')
 plt.plot(np.exp(logsigmak), alpha=0.5, label='sigma k - entropic ')
 plt.plot(np.exp(logsigmaq_noe), alpha=0.5, label='sigma q - non entropic ')
-plt.plot(np.exp(logsigmak_noe), alpha=0.5, label='sigma k - non entropic ')
+#plt.plot(np.exp(logsigmak_noe), alpha=0.5, label='sigma k - non entropic ')
 plt.plot(np.ones(len(logsigmaq)) *
          np.sqrt(torch.var(x).item()), label='sigma true')
 plt.legend()
