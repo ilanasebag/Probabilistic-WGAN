@@ -113,7 +113,7 @@ class quadratic(nn.Module):
 
 
 class quartic(nn.Module):
-    def __init__(self, t1=0, t2=10, t3=-35, t4=50):
+    def __init__(self, t1=1, t2=2, t3=3, t4=4):
         super().__init__()
         self.theta1 = nn.Parameter(torch.Tensor([t1]))
         self.theta2 = nn.Parameter(torch.Tensor([t2]))
@@ -124,6 +124,6 @@ class quartic(nn.Module):
         """ logically the first term shoud be negative; 
         thus, we must ensure theta1 to be positive;
         try: exp, sigmoid, softmax, squared, abs,... """
-        return - x **4 * torch.exp(self.theta1) +   x **3 * self.theta2+ x **2 * self.theta3 +  x * self.theta4 - 24 
-         #- (x**4 *torch.exp(self.theta1) + x**3 *self.theta2 + x**2 *self.theta3 + x *self.theta4)  
+        return - (x**4 *torch.sigmoid(self.theta1) + x**3 *self.theta2 + x**2 *self.theta3 + x *self.theta4)  
+         #- x **4 * torch.exp(self.theta1) +   x **3 * self.theta2+ x **2 * self.theta3 +  x * self.theta4 - 24 with t1=0, t2=10, t3=-35, t4=50
          #- (x-(self.theta1))*(x-self.theta2)*(x-self.theta3)*(x-self.theta4)
